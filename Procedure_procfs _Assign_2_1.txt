@@ -1,0 +1,68 @@
+-----------------------------------------------------------------------------------
+                           Procedure - procfs - Assign_2_1
+-----------------------------------------------------------------------------------
+ 
+ -> Structure : truct MyDriver
+    --> Contains : struct list_head list;
+                   char info[];
+
+ -> Initialization Block
+    --> Contains : Object Pointer of MyDriver "mydrv_new"
+                   A "proc_mkdir(p1,p2)"
+                   A "proc_create(p1,p2,p3,p4)"
+                   Initializes memory and add data in "mydrv_new"
+                   ---> mydrv_new = kmalloc(p1,p2);
+                        sprintf(mydrv_new->info,"DataAdd",p3);
+                        list_add_tail(&mydrv_new->list, &mydrv_list);
+                   Add a "printk()" and a dump_stack();
+                   Return 0;
+ -> module_init(Initialization Block);
+
+ -> Exit Block
+    --> Contains : Two Object Pointer of MyDriver "mydrv_new"
+                   Free the memory allocated
+                   ---> list_for_each_entry_safe(p1,p2,p3,p4)
+                        { kfree(p); }
+                   remove_proc_entry(p1,p2); //Proc_File
+                   remove_proc_entry(p1,p2); //Directory
+                   Add a "printk()" and a dump_stack();
+ -> module_exit(Exit Block);
+
+
+ -> MyDriver Sequence Open Method
+    --> Contains : A "printk" and a dump_stack();
+                   return "seq_open(file, mydrv_seq_open method);
+ -> Attach this Open Method to File Operation
+                   .owner = THIS_MODULE,
+                   .open = MyDriver Sequence Open Method,
+                   .read = seq_read,
+                   .llseek = seq_lseek,
+                   .release = seq_release,
+
+
+ -> MyDriver Sequence Methods
+    --> START() : list_for_each_entry(p1,p2,p3) { ... }
+                  return NULL
+    --> NEXT() : return list_entry(p1,p2,p3)
+    --> SHOW() : return seq_printf(p1,p2,p3)
+    --> STOP() :
+ -> Attach these Sequence Methods to Sequence Operations 
+                   .start  = START,
+                   .next   = NEXT,
+                   .stop   = STOP,
+                   .show   = SHOW,
+
+------------ USER-SPACE CODE ------------
+
+ -> Main()
+    --> open(p1,p2);
+        ---> Add error checking.
+    --> read(p1,p2,p3); 
+        ---> Add error checking.
+
+------------ MAKEFILE ------------
+
+ -> obj-m := name_of_module.o
+ -> ccflags-y += -O1
+    ccflags-y += -g
+
