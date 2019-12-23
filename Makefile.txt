@@ -1,0 +1,7 @@
+obj-m := proc_seq_example2.o 
+#obj-m :=   kset-example.o
+
+#ccflags-y += -DDEBUG 
+#ccflags-y += -O0
+ccflags-y += -g
+#ccflags-y += -E
