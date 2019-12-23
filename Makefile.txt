@@ -1,0 +1,6 @@
+obj-m := proc_seq_example1.o 
+
+#ccflags-y += -DDEBUG 
+ccflags-y += -O1
+ccflags-y += -g
+#ccflags-y += -E
